@@ -6,10 +6,13 @@ import CartList from './CartList';
 import CartAlert from './CartAlert';
 
 const API_KEY = process.env.REACT_APP_FORTNITE_API_KEY;
+const GOODS_PER_PAGE = 24;
 
 export default function Main() {
     const [isLoading, setLoading] = useState(false);
     const [goods, setGoods] = useState([]);
+    const [page, setPage] = useState(1);
+    const [goodsOnPage, setGoodsOnPage] = useState([]);
     const [goodsInCart, setGoodsInCart] = useState([]);
     const [sumInCart, setSumInCart] = useState(0);
     const [isCartShow, setCartShow] = useState(false);
@@ -24,16 +27,26 @@ export default function Main() {
             .then(data => {
                 if ('result' in data && data.result === true && 'shop' in data) {
                     setGoods(data.shop);
+                    setGoodsOnPage(data.shop.slice(0, GOODS_PER_PAGE));
                 } else {
                     setGoods([]);
+                    setGoodsOnPage([]);
                 }
             })
             .catch(err => { 
                 console.error(err); 
                 setGoods([]);
+                setGoodsOnPage([]);
             })
             .finally(() => setLoading(false));    
     }, []);
+
+    const gotoPage = function(newPage = 1) {
+        const maxPage = Math.ceil(goods.length / GOODS_PER_PAGE);
+        if (newPage > maxPage || newPage < 1) return;
+        setPage(newPage);
+        setGoodsOnPage(goods.slice((newPage - 1) * GOODS_PER_PAGE, newPage * GOODS_PER_PAGE));
+    }
 
     const addToCart = function(id) {
         const cartIndex = goodsInCart.findIndex(item => item.id === id);
@@ -99,7 +112,14 @@ export default function Main() {
             <main className="flex-grow">
                 <div className='my-8'>
                     { isLoading ? <Loading/> : goods.length ? 
-                        <GoodsList goods={goods} addToCart={addToCart} /> :
+                        <GoodsList 
+                            goods={goodsOnPage} 
+                            page={page}
+                            perPage={GOODS_PER_PAGE}
+                            totalGoods={goods.length}
+                            addToCart={addToCart} 
+                            gotoPage={gotoPage}
+                        /> :
                         <span className='text-lg'>No goods found</span> }
                 </div>
             </main>
