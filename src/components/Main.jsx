@@ -13,8 +13,8 @@ export default function Main() {
     const { isLoading, goodsOnPage, isCartShow, alertText, setGoods, startLoading
     } = useContext(ShopContext);
 
-    useEffect(function getGoods() {
-        //startLoading();
+    useEffect(() => { // API REQUEST On Component Init
+        startLoading();
         fetch(API_URL, { method: 'GET',
             headers: { Accept: 'application/json', Authorization: API_KEY } 
         })
@@ -30,7 +30,8 @@ export default function Main() {
                 console.error(err); 
                 setGoods([]);
             });
-    }, [setGoods, startLoading]);
+        // eslint-disable-next-line
+    }, []);
     
     return (
         <>
