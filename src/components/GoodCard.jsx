@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from "react";
+import { ShopContext } from "../context";
 
 export default function GoodCard({
-    displayName, displayDescription, mainId, price, granted,
-    displayType, addToCart = Function.prototype})
+    displayName, displayDescription, mainId, price, granted, displayType})
 {
+  const {addToCart} = useContext(ShopContext);
   const imgUrl = (granted && Array.isArray(granted) && granted.length > 0 &&
     'images' in granted[0] && 'full_background' in granted[0].images) ?
     granted[0].images.full_background : `https://placehold.co/150x150?text=${displayName}`;
