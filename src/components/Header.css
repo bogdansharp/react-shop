@@ -1,0 +1,12 @@
+
+@media (max-width: 200px) {
+  .App .site-title-block svg {
+    display: none !important;
+  }
+  .App .site-title-block h1 {
+    font-size: 1rem !important;
+  }
+  .App .site-title-block {
+    justify-content: left !important;
+  }
+}
